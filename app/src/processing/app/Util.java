@@ -688,9 +688,7 @@ public class Util {
    * Ignores (does not extract) any __MACOSX files from macOS archives.
    */
   static public void unzip(File zipFile, File dest) throws IOException {
-    FileInputStream fis = new FileInputStream(zipFile);
-    CheckedInputStream checksum = new CheckedInputStream(fis, new Adler32());
-    ZipInputStream zis = new ZipInputStream(new BufferedInputStream(checksum));
+    try (ZipInputStream zis = new ZipInputStream( new BufferedInputStream( new CheckedInputStream( new FileInputStream(zipFile), new Adler32())))) {
     ZipEntry entry;
     while ((entry = zis.getNextEntry()) != null) {
       final String name = entry.getName();
@@ -709,6 +707,7 @@ public class Util {
         }
       }
     }
+  }
   }
 
 
